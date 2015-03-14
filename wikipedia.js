@@ -25,11 +25,11 @@ commands.addUserCommand(['wiki[pedia]'], 'Wikipedia',
       else
         var lang = default_lang;
       /* Asynchronously get wiki suggestions. */
-      util.httpGet(suggest_base_url._({lang: lang, limit: limit, keyword: ctx.filter}), function(xhr) {
+      util.httpGet(suggest_base_url._({lang: lang, limit: limit, keyword: encodeURIComponent(ctx.filter.replace(/_/g, ' '))}), function(xhr) {
         var completions = [];
         var suggestions = JSON.parse(xhr.responseText);
         for(var i = 0; i < suggestions[1].length; ++i)
-          completions.push([suggestions[1][i], suggestions[2][i]]);
+          completions.push([suggestions[1][i].replace(/ /g, '_'), suggestions[2][i]]);
         /* You CANNOT just push items into ctx.completions, which seems to only
          * respect assignment. */
         ctx.completions = completions;
